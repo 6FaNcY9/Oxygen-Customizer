@@ -28,6 +28,7 @@ import it.dhd.oxygencustomizer.xposed.hooks.systemui.AudioDataProvider;
 import it.dhd.oxygencustomizer.xposed.hooks.systemui.BatteryDataProvider;
 import it.dhd.oxygencustomizer.xposed.hooks.systemui.CaffeineTile;
 import it.dhd.oxygencustomizer.xposed.hooks.systemui.ControllersProvider;
+import it.dhd.oxygencustomizer.xposed.hooks.systemui.FaceAuthCameraFix;
 import it.dhd.oxygencustomizer.xposed.hooks.systemui.FeatureOption;
 import it.dhd.oxygencustomizer.xposed.hooks.systemui.FluidMusic;
 import it.dhd.oxygencustomizer.xposed.hooks.systemui.MediaPlayerObserver;
@@ -96,6 +97,9 @@ public class ModPacks {
             }
             case SYSTEM_UI -> {
                 if (!XPLauncher.isChildProcess) {
+                    // Android 16 camera-listener bootloop fix (must be first)
+                    modPacks.add(FaceAuthCameraFix.class);
+
                     // Caffeine Tile
                     modPacks.add(CaffeineTile.class);
 

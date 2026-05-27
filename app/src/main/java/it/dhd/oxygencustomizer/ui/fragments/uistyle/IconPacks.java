@@ -65,7 +65,9 @@ public class IconPacks extends BaseFragment {
     private IconsAdapter initIconPackItems() {
         iconPacks = new ArrayList<>();
         for (int i = 0; i< packs.size(); i++) {
-            String pkgName = packs.get(i).split("]")[1].replaceAll(" ", "");
+            String[] parts = packs.get(i).split("]");
+            if (parts.length < 2) continue;
+            String pkgName = parts[1].replaceAll(" ", "");
             iconPacks.add(
                     new IconModel(
                             getStringFromOverlay(OxygenCustomizer.getAppContext(), pkgName, "theme_name"),

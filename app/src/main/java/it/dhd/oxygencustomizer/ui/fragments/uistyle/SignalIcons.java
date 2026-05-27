@@ -51,7 +51,9 @@ public class SignalIcons extends BaseFragment {
         signalIcons = new ArrayList<>();
         List<String> pack = getOverlayForComponent("SGIC");
         for (int i = 0; i< pack.size(); i++) {
-            String pkgName = pack.get(i).split("]")[1].replaceAll(" ", "");
+            String[] parts = pack.get(i).split("]");
+            if (parts.length < 2) continue;
+            String pkgName = parts[1].replaceAll(" ", "");
             signalIcons.add(
                     new IconModel(
                             getStringFromOverlay(OxygenCustomizer.getAppContext(), pkgName, "theme_name"),

@@ -50,7 +50,9 @@ public class WifiIcons extends BaseFragment {
         wifiIcons = new ArrayList<>();
         List<String> packs = getOverlayForComponent("WIFI");
         for (int i = 0; i< packs.size(); i++) {
-            String pkgName = packs.get(i).split("]")[1].replaceAll(" ", "");
+            String[] parts = packs.get(i).split("]");
+            if (parts.length < 2) continue;
+            String pkgName = parts[1].replaceAll(" ", "");
             wifiIcons.add(
                     new IconModel(
                             getStringFromOverlay(getContext(), pkgName, "theme_name"),

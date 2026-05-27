@@ -49,7 +49,9 @@ public class UiStyle extends BaseFragment {
         ArrayList<ThemeModel> mThemeNames = new ArrayList<>();
         List<String> pack = getOverlayForComponent("TH");
         for (int i = 0; i< pack.size(); i++) {
-            String themeName = pack.get(i).split("]")[1].replaceAll(" ", "");
+            String[] parts = pack.get(i).split("]");
+            if (parts.length < 2) continue;
+            String themeName = parts[1].replaceAll(" ", "");
             mThemeNames.add(new ThemeModel(themeName,
                     getStringFromOverlay(
                             requireContext(),

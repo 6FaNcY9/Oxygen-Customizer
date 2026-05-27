@@ -31,24 +31,26 @@ public class FeatureOption extends XposedMods {
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
 
-        ReflectedClass FeatureOptions = ReflectedClass.of("com.oplusos.systemui.common.feature.FeatureOption", lpparam.classLoader);
+        ReflectedClass FeatureOptions = ReflectedClass.ofIfPossible("com.oplusos.systemui.common.feature.FeatureOption", lpparam.classLoader);
+        if (FeatureOptions.getClazz() != null) {
+            FeatureOptions
+                    .before("isOplusVolumeKeyInRight")
+                    .run(param -> {
+                        if (volumePanelPosition == 0) return;
 
-        FeatureOptions
-                .before("isOplusVolumeKeyInRight")
-                .run(param -> {
-                    if (volumePanelPosition == 0) return;
+                        if (volumePanelPosition == 1)
+                            param.setResult(true);
+                        else
+                            param.setResult(false);
+                    });
 
-                    if (volumePanelPosition == 1)
-                        param.setResult(true);
-                    else
-                        param.setResult(false);
-                });
+            FeatureOptions
+                    .before("isSupportMyDevice")
+                    .run(param -> {
+                        if (showMyDevice) param.setResult(true);
+                    });
+        }
 
-        FeatureOptions
-                .before("isSupportMyDevice")
-                .run(param -> {
-                    if (showMyDevice) param.setResult(true);
-                });
         ReflectedClass QSFeatureOption = ReflectedClass.ofIfPossible("com.oplusos.systemui.common.feature.QSFeatureOption");
         if (QSFeatureOption.getClazz() != null) {
             QSFeatureOption
@@ -58,16 +60,18 @@ public class FeatureOption extends XposedMods {
                     });
         }
 
-        ReflectedClass AodMediaDataListener = ReflectedClass.of("com.oplusos.systemui.aod.mediapanel.AodMediaDataListener$Companion");
-        ReflectedClass.ReflectionConsumer musicHooker = param -> {
-            if (allowAodMusic) param.setResult(true);
-        };
-        AodMediaDataListener
-                .before("isAodMediaSupportWithoutFeature")
-                .run(musicHooker);
-        AodMediaDataListener
-                .before("isAodMediaSupport")
-                .run(musicHooker);
+        ReflectedClass AodMediaDataListener = ReflectedClass.ofIfPossible("com.oplusos.systemui.aod.mediapanel.AodMediaDataListener$Companion");
+        if (AodMediaDataListener.getClazz() != null) {
+            ReflectedClass.ReflectionConsumer musicHooker = param -> {
+                if (allowAodMusic) param.setResult(true);
+            };
+            AodMediaDataListener
+                    .before("isAodMediaSupportWithoutFeature")
+                    .run(musicHooker);
+            AodMediaDataListener
+                    .before("isAodMediaSupport")
+                    .run(musicHooker);
+        }
 
     }
 
